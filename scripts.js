@@ -30,6 +30,7 @@ var randomTitles = ["Clerk", "Assistant", "Accountant", "Systems Engineer", "Tec
 $(document).ready(function()
 {
 	showSalary();
+
 	$('#Add_btn').on('click', function (e)
 	{
 		// get employee number for checking and adding employee, setting exists to false to check if it already exists
@@ -98,6 +99,7 @@ $(document).ready(function()
 		{
 			if(element.number == id)
 			{
+				alert(employeesArray[index].getForwardName() +" has been terminated.");
 				removeSalary(employeesArray[index].salary);
 				employeesArray.splice(index, 1);
 				return true;
@@ -163,6 +165,11 @@ function Employee(first, last, num, title, review, salary)
 
 		return true;
 	};
+
+	this.getForwardName = function()
+	{
+		return this.firstName +" "+ this.lastName;
+	}
 
 	// if first name is set to 0 (int), then create random employee
 	if(first != undefined)
