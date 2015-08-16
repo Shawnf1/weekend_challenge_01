@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <title>Employee Info</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <form id="Info_frm">
+        <fieldset>
+            <legend>
+                Add Employee
+            </legend>
+            <label for="FirstName">First Name </label>
+            <input type="text" id="FirstName" name="FirstName" required="true" />
+            <label for="LastName">Last Name </label>
+            <input type="text" id="LastName" name="LastName" required="true" />
+            <label for="EmployeeNum">Employee Number </label>
+            <input type="text" id="EmployeeNum" name="EmployeeNum" required="true" />
+            <label for="Title">Title </label>
+            <input type="text" id="Title" name="Title" required="true" />
+            <label for="Review">Last Review </label>
+            <input type="text" id="Review" name="Review" required="true" />
+            <label for="Salary">Salary </label>
+            <input type="text" id="Salary" name="Salary" required="true" />
+            <button id="Add_btn" value="Add" form="Info_frm">Add</button>
+            <!--<button id="random_btn" value="Random">Randomize Add</button>-->
+            <input type="button" id="Random_btn" value="Randomize Add" />
+        </fieldset>
+    </form>
+    <secton id="Employees_sct">
+        <ul id="Employees_ul">
+
+        </ul>
+
+    </secton>
+<script src="jquery-2.1.4.min.js"></script>
+<script src="chance.min.js"></script>
+<script src="scripts.js"></script>
+</body>
+</html>

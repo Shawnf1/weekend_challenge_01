@@ -1,0 +1,35 @@
+.hidden {
+    display: none;
+}
+
+.info {
+    list-style-type: none;
+}
+
+ul {
+    width: 200px;
+}
+
+li {
+    padding: 10px;
+}
+
+.rating1{
+    background-color: red;
+}
+
+.rating2{
+    background-color:  orange;
+}
+
+.rating3{
+    background-color: yellow;
+}
+
+.rating4{
+    background-color: greenyellow;
+}
+
+.rating5{
+    background-color: lawngreen;
+}
