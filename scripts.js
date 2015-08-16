@@ -23,12 +23,14 @@ var $remove = $('<button>');
 $remove.text("X");
 $remove.addClass("remove");
 
+var totalSal = 0;
 var randomTitles = ["Clerk", "Assistant", "Accountant", "Systems Engineer", "Tech Support", "Janitor",
 	"EVP", "Salesman", "Customer Service"];
 
 $(document).ready(function()
 {
-	console.log("Ready");
+	showSalary();
+	//console.log("Ready");
 	$('#Add_btn').on('click', function (e)
 	{
 		// get employee number for checking and adding employee
@@ -79,6 +81,8 @@ $(document).ready(function()
 			var i = employeesArray.length - 1;
 			console.log(employeesArray[i]);
 
+			addSalary(employeesArray[employeesArray.length - 1].salary);
+
 			// call function to create and add ul/li to employees list
 			addToList();
 
@@ -98,11 +102,13 @@ $(document).ready(function()
 		employeesArray.push(random);
 		addToList();
 
-		console.log("Works here");
+		addSalary(employeesArray[employeesArray.length - 1].salary);
+
+		//console.log("Works here");
 
 		// after adding ul/li's, sort array to alphabetize
 		employeesArray.sort();
-		console.log("after here");
+		//console.log("after here");
 		sortArray();
 		//sortList();
 		e.preventDefault();
@@ -111,32 +117,34 @@ $(document).ready(function()
 
 	$($employUl).on('mouseenter', '.employee li:first-child', function (e)
 	{
-		console.log("middle enter", $(this).text());
+		//console.log("middle enter", $(this).text());
 		$(this).next().removeClass('hidden');
 		e.preventDefault();
 	});
 
 	$($employUl).on('mouseleave', '.employee li:first-child', function (e)
 	{
-		console.log("middle leave", $(this).text());
+		//console.log("middle leave", $(this).text());
 		$(this).next().addClass('hidden');
 		e.preventDefault();
 	});
 
 	$($employUl).on("click", ".remove", function(e)
 	{
-		var ul = $(this).closest("ul");
-		var id = ul.attr("id");
-		id = removeNonNumeric(id);
+		var $ul = $(this).closest(".employee");
+		var id = $ul.data('id');
+		//console.log("id for processing", id);
+		//id = removeNonNumeric(id);
 		employeesArray.forEach(function (element, index)
 		{
 			if(element.number == id)
 			{
+				removeSalary(employeesArray[index].salary);
 				employeesArray.splice(index, 1);
 				return true;
 			}
 		});
-		ul.remove();
+		$ul.remove();
 		e.preventDefault();
 	});
 });
@@ -221,6 +229,23 @@ function Employee(first, last, num, title, review, salary)
 	}
 }
 
+function addSalary(sal)
+{
+	totalSal += sal;
+	showSalary();
+}
+
+function removeSalary(sal)
+{
+	totalSal -= sal;
+	showSalary();
+}
+
+function showSalary()
+{
+	$('#TotalSalary_spn').text('$'+ totalSal.toLocaleString());
+}
+
 // for adding new entries to ul, assumes last one entered is desired
 function addToList()
 {
@@ -240,6 +265,10 @@ function addToList()
 	var name = employeesArray[i].getName();
 	$li1 = $('<li>');
 	$li1.text(name);
+	//$.extend(true, $li1, $remove);
+	//$li1.append($.extend(true, {}, $remove));
+	$remove.clone().appendTo($li1);
+	//$li1.append($remove);
 	$li2 = $('<li>', {
 		'class': 'hidden info'
 	});
@@ -247,6 +276,7 @@ function addToList()
 	//$ul.append('<li>' +employeesArray[i].getName() +'</li>');
 	$ul.append($li1);
 	$ul.append($li2);
+	//$ul.append($remove);
 	//$ul.append('<li class="hidden info">' +employeesArray[i].getTitledInfo() +'</li>');
 
 	var inserted = false;
@@ -260,20 +290,20 @@ function addToList()
 		// iterate employee UL's, see where it belongs alphabetically
 		$employUl.find('.employee :first-child').each(function(i, el)
 		{
-			console.log($(this).text(), name, "index "+ i, name < $(this).text());
-			if(name < $(this).text() == true)
+			//console.log($(this).text(), name, "index "+ i, name < $(this).text());
+			if(name < $(this).text() == true && inserted == false)
 			{
-				console.log("True, should be working");
+				//console.log("True, should be working");
 				inserted = true;
 				//$ul.insertBefore($(this));
-				$ul.insertBefore($(this).parent());
+				$ul.insertBefore($(this).closest('.employee'));
 				//$(this).closest('.employee').before($ul);
 				return true;
 			}
 		});
 		if(inserted == false)
 		{
-			console.log("Appended");
+			//console.log("Appended");
 			$employUl.append($ul);
 		}
 	}
@@ -322,7 +352,7 @@ function sortArray()
 			return v;
 		})];
 	}).get();
-	console.log(listArray);
+	//console.log(listArray);
 	//
 	//var nameArray = $employUl.find('ul:first-child').map(function(innerHTML) {
 	//	return innerHTML;

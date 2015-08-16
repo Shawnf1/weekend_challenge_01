@@ -7,7 +7,17 @@
 }
 
 ul {
-    width: 200px;
+    width: 300px;
+}
+
+#Employees_ul ul:first-of-type{
+    border-top: solid black thin;
+}
+
+.employee {
+    border-right: solid black thin;
+    border-bottom: solid black thin;
+    border-left: solid black thin;
 }
 
 li {
