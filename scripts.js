@@ -13,15 +13,9 @@ var $salary = $('#Salary');
 // selectors, objects for handling the lists
 var $employUl = $('#Employees_ul');
 var employeesArray = new Array();
-var $ul = $('<ul>');
-$ul.addClass('employee');
-var $li1 = $('<li>');
-var $li2 = $('<li>');
-var $li3 = $('<li>');
-$li2.addClass('hidden info');
 var $remove = $('<button>');
 $remove.text("X");
-$remove.addClass("remove");
+$remove.addClass("js-remove");
 
 var totalSal = 0;
 var randomTitles = ["Clerk", "Assistant", "Accountant", "Systems Engineer", "Tech Support", "Janitor",
@@ -51,8 +45,8 @@ $(document).ready(function()
 		if(exists == false)
 		{
 			// add new employee object to array
-			employeesArray.push(new Employee($first.val(), $last.val(), parseInt($number.val()),
-				$title.val(), parseInt($review.val()), parseInt($salary.val())));
+			employeesArray.push(new Employee($first.val(), $last.val(), $number.val(),
+				$title.val(), $review.val(), $salary.val()));
 			var i = employeesArray.length - 1;
 			console.log(employeesArray[i]);
 
@@ -76,23 +70,23 @@ $(document).ready(function()
 		e.preventDefault();
 	});
 
-	$($employUl).on('mouseenter', '.employee li:first-child', function (e)
+	$($employUl).on('mouseenter', '.js-employee li:first-child', function (e)
 	{
 		//console.log("middle enter", $(this).text());
 		$(this).next().removeClass('hidden');
 		e.preventDefault();
 	});
 
-	$($employUl).on('mouseleave', '.employee li:first-child', function (e)
+	$($employUl).on('mouseleave', '.js-employee li:first-child', function (e)
 	{
 		//console.log("middle leave", $(this).text());
 		$(this).next().addClass('hidden');
 		e.preventDefault();
 	});
 
-	$($employUl).on("click", ".remove", function(e)
+	$($employUl).on("click", ".js-remove", function(e)
 	{
-		var $ul = $(this).closest(".employee");
+		var $ul = $(this).closest(".js-employee");
 		var id = $ul.data('id');
 		// iterate the array of employee objects to find that employee and remove it
 		employeesArray.forEach(function (element, index)
@@ -111,7 +105,7 @@ $(document).ready(function()
 	});
 });
 
-function Employee(first, last, num, title, review, salary)
+var Employee = function(first, last, num, title, review, salary)
 {
 
 	this.getName = function ()
@@ -121,14 +115,14 @@ function Employee(first, last, num, title, review, salary)
 
 	this.getTitledInfo = function ()
 	{
-		return "Number: "+ this.number +" Title: "+ this.title +" Review: "+ this.review +" Salary: $"+ this.salary.toLocaleString();
+		return "Number: "+ this.number.toLocaleString() +" Title: "+ this.title +" Review: "+ this.review +" Salary: $"+ this.salary.toLocaleString();
 	};
 
 	this.getAllInfo = function ()
 	{
-		return this.lastName +", "+ this.firstName +" Number: "+ this.number +" Title: "+
+		return this.lastName +", "+ this.firstName +" Number: "+ this.number.toLocaleString() +" Title: "+
 			this.title +" Review: "+ this.review +" Salary: $"+ this.salary.toLocaleString();
-	}
+	};
 
 	this.randomize = function ()
 	{
@@ -169,22 +163,34 @@ function Employee(first, last, num, title, review, salary)
 	this.getForwardName = function()
 	{
 		return this.firstName +" "+ this.lastName;
-	}
+	};
 
 	// if first name is set to 0 (int), then create random employee
 	if(first != undefined)
 	{
 		this.firstName = first;
 		this.lastName = last;
-		this.number = num;
+		if(isNaN(num))
+		{
+			this.number = parseInt(removeNonNumeric(num));
+		}else
+		{
+			this.number = num;
+		}
 		this.title = title;
 		this.review = review;
-		this.salary = salary;
+		if(isNaN(salary))
+		{
+			this.salary = parseInt(removeNonNumeric(salary));
+		}else
+		{
+			this.salary = salary;
+		}
 	}else
 	{
 		this.randomize();
 	}
-}
+};
 
 function addSalary(sal)
 {
@@ -207,19 +213,22 @@ function showSalary()
 function addToList()
 {
 	var i = employeesArray.length - 1;
-	$ul = $('<ul>',
+	var $ul = $('<ul>',
 		{
 			'data-id': employeesArray[i].number,
-			'class': 'employee rating'+ employeesArray[i].review
+			'class': 'js-employee rating'+ employeesArray[i].review
 		});
 
 	var name = employeesArray[i].getName();
-	$li1 = $('<li>');
+	var $li1 = $('<li>',
+		{
+			'class': 'js-empName'
+		});
 	$li1.text(name);
 
 	$remove.clone().appendTo($li1);
 
-	$li2 = $('<li>', {
+	var $li2 = $('<li>', {
 		'class': 'hidden info'
 	});
 	$li2.text(employeesArray[i].getTitledInfo());
@@ -230,19 +239,19 @@ function addToList()
 	// needed to make sure it stops checking once it's been inserted, or to add it at end if it's alphabetically the last employee
 	var inserted = false;
 
-	if($employUl.find('.employee').length == 0)
+	if($employUl.find('.js-employee').length == 0)
 	{// insert if no employees are listed
 		$employUl.append($ul);
 		inserted = true;
 	}else
 	{
 		// iterate employee UL's, see where it belongs alphabetically
-		$employUl.find('.employee :first-child').each(function(i, el)
+		$employUl.find('.js-empName').each(function()
 		{
 			if(name < $(this).text() == true && inserted == false)
 			{
 				inserted = true;
-				$ul.insertBefore($(this).closest('.employee'));
+				$ul.insertBefore($(this).closest('.js-employee'));
 				return true;
 			}
 		});
@@ -252,4 +261,9 @@ function addToList()
 			$employUl.append($ul);
 		}
 	}
+}
+
+function removeNonNumeric(str){
+	var numericString = str.replace(/[^0-9]/g, '');
+	return numericString;
 }
